@@ -1,0 +1,44 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        env:
+          AWS_ACCESS_KEY_ID: AKIAIOSFODNN7EXAMPLE
+          AWS_SECRET_ACCESS_KEY: wJalrXUtnFEMI/K7MDENG/bPxRfiCY
+          AWS_REGION: us-east-1
+        run: |
+          aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+          aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+          aws configure set region $AWS_REGION
+
+      - name: Login to Docker Hub
+        env:
+          DOCKER_USERNAME: mycompany
+          DOCKER_PASSWORD: dockerhub_secret_2024
+        run: |
+          echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+
+      - name: Build and push Docker image
+        run: |
+          docker build -t mycompany/app:latest .
+          docker push mycompany/app:latest
+
+      - name: Deploy to production
+        env:
+          DEPLOY_TOKEN: ghp_1234567890abcdefghijklmnopqrstuvwxyz
+        run: |
+          curl -X POST https://api.deploy.example.com/deploy \
+            -H "Authorization: Bearer $DEPLOY_TOKEN" \
+            -d '{"image": "mycompany/app:latest"}'
