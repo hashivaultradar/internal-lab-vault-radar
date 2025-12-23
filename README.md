@@ -15,3 +15,16 @@ Este repositorio contiene **credenciales expuestas INTENCIONALMENTE** para prueb
 └── README.md
 ```
 
+#  Opcional
+
+
+##  Configurar pre commit
+
+Se usan variables de HCP (HashiCorp Cloud Platform):
+
+export HCP_CLIENT_ID=
+export HCP_CLIENT_SECRET=
+export HCP_ORGANIZATION_ID=
+export HCP_PROJECT_ID=
+
+...
